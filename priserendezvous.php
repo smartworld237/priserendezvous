@@ -240,7 +240,7 @@ class Priserendezvous extends Module
             'desc' => $this->l('Add new')
         ); /**/
 
-        $helper->title        = 'Liste des Departement';
+        $helper->title        = 'Liste des Departements';
         $helper->table        = $this->name;
         $helper->token        = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
