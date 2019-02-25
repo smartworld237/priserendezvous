@@ -15,7 +15,7 @@ class Priserendezvousdepartement extends ObjectModel
     public static $definition = array(
         'table' => 'priserendezvousdepartement',
         'primary' => 'id_priserendezvousdepartement',
-        // 'multilang' => true,
+        'multilang' => true,
         'fields' => array(
             // Lang fields
             'nom_departement' => array('type' => self::TYPE_STRING,'lang' => true),

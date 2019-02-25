@@ -27,8 +27,8 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-require_once _PS_MODULE_DIR_ . 'priserendezvous/classes/ServiceDevisModel.php';
-
+require_once _PS_MODULE_DIR_ . 'priserendezvous/classes/Priserendezvouscreneaux.php';
+require_once _PS_MODULE_DIR_ . 'priserendezvous/classes/Priserendezvousdepartement.php';
 class Priserendezvous extends Module
 {
     protected $config_form = false;
@@ -121,31 +121,42 @@ class Priserendezvous extends Module
         if (((bool)Tools::isSubmit('submitDevisserviceModule')) == true) {
             $this->postProcess();
         }
+        if (Tools::isSubmit('saveCrenneaux')) {
+            return $this->processSaveCrenneaux();
+        } elseif (Tools::isSubmit('updatecrenneaux') || Tools::isSubmit('addcrenneaux')) {
+            $this->html .= $this->renderForm();
+            return $this->html;
+        } else if (Tools::isSubmit('deletecrenneaux')) {
+            Tools::redirectAdmin(AdminController::$currentIndex . '&configure=' . $this->name . '&token=' .
+                Tools::getAdminTokenLite('AdminModules'));
+        }else if (Tools::isSubmit('saveDepartement')) {
+            return $this->processSaveDepartement();
+        } elseif (Tools::isSubmit('updateDepartement') || Tools::isSubmit('addDepartement')) {
+            $this->html .= $this->renderFormDepartement();
+            return $this->html;
+        } else if (Tools::isSubmit('deleteDepartement')) {
+            Tools::redirectAdmin(AdminController::$currentIndex . '&configure=' . $this->name . '&token=' .
+                Tools::getAdminTokenLite('AdminModules'));
+        }
         $this->context->smarty->assign('module_dir', $this->_path);
 
         $output = $this->context->smarty->fetch($this->local_path.'views/templates/admin/configure.tpl');
 
-        return $output.$this->renderList();
+        return $output.$this->renderListDepartement().$this->renderList();
     }
     protected function renderList(){
         $this->fields_list          = array();
-        $this->fields_list['id_priserendezvous'] = array(
+        $this->fields_list['id_priserendezvouscreneaux'] = array(
             'title' => $this->l('id'),
             'type' => 'text',
             'search' => false,
             'orderby' => false
         );
-        $this->fields_list['client'] = array(
-            'title' => $this->l('Client'),
+        $this->fields_list['nom_departement'] = array(
+            'title' => $this->l('Nom du Departement'),
             'type' => 'text',
-            'search' => false,
-            'orderby' => false
-        );
-        $this->fields_list['jour'] = array(
-            'title' => $this->l('Jour'),
-            'type' => 'text',
-            'search' => false,
-            'orderby' => false
+            'search' => true,
+            'orderby' => true
         );
         $this->fields_list['hdebut'] = array(
             'title' => $this->l('Heure de debut'),
@@ -167,8 +178,48 @@ class Priserendezvous extends Module
             'type' => 'text',
             'search' => false,
             'orderby' => false
-        );  $this->fields_list['nom_departement'] = array(
+        );
+        $helper = new HelperList();
+        $helper->shopLinkType   = '';
+        $helper->simple_header      = false;
+        $helper->identifier         = 'priserendezvouscreneaux';
+        $helper->actions            = array(
+            'view',
+            'delete'
+        );
+        $helper->show_toolbar       = true;
+        $helper->imageType          = 'jpg';
+       $helper->toolbar_btn['new'] = array(
+            'href' => AdminController::$currentIndex . '&configure=' . $this->name . '&addcrenneaux'. '&token='
+                . Tools::getAdminTokenLite('AdminModules'),
+            'desc' => $this->l('Add new')
+        );
+
+        $helper->title        = 'Liste des Creneaux';
+        $helper->table        = $this->name;
+        $helper->token        = Tools::getAdminTokenLite('AdminModules');
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+
+        $content = $this->getListContent($this->context->language->id);
+
+        return $helper->generateList($content, $this->fields_list);
+    }
+    protected function renderListDepartement(){
+        $this->fields_list          = array();
+        $this->fields_list['id_priserendezvousdepartement'] = array(
+            'title' => $this->l('id'),
+            'type' => 'text',
+            'search' => false,
+            'orderby' => false
+        );
+        $this->fields_list['nom_departement'] = array(
             'title' => $this->l('Nom du Departement'),
+            'type' => 'text',
+            'search' => false,
+            'orderby' => false
+        );
+        $this->fields_list['telephone'] = array(
+            'title' => $this->l('Telephone'),
             'type' => 'text',
             'search' => false,
             'orderby' => false
@@ -176,25 +227,25 @@ class Priserendezvous extends Module
         $helper = new HelperList();
         $helper->shopLinkType   = '';
         $helper->simple_header      = false;
-        $helper->identifier         = 'id_priserendezvous';
+        $helper->identifier         = 'id_priserendezvousdepartement';
         $helper->actions            = array(
             'view',
             'delete'
         );
         $helper->show_toolbar       = true;
         $helper->imageType          = 'jpg';
-        /*$helper->toolbar_btn['new'] = array(
-            'href' => AdminController::$currentIndex . '&configure=' . $this->name . '&addreponseDevis'. '&token='
+        $helper->toolbar_btn['new'] = array(
+            'href' => AdminController::$currentIndex . '&configure=' . $this->name . '&addDepartement'. '&token='
                 . Tools::getAdminTokenLite('AdminModules'),
             'desc' => $this->l('Add new')
-        );*/
+        ); /**/
 
-        $helper->title        = 'Liste des Rendez Vous';
+        $helper->title        = 'Liste des Departement';
         $helper->table        = $this->name;
         $helper->token        = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
 
-        $content = $this->getListContent($this->context->language->id);
+        $content = $this->getListContentDepartement($this->context->language->id);
 
         return $helper->generateList($content, $this->fields_list);
     }
@@ -210,13 +261,28 @@ class Priserendezvous extends Module
         if (is_null($id_lang))
             $id_lang = (int) Configuration::get('PS_LANG_DEFAULT');
 
-        $sql = 'SELECT r.`*`, cr.`*`, c.`firstname` as client
-            FROM `' . _DB_PREFIX_ . 'priserendezvous`r 
-            LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON (r.`id_client` = c.`id_customer`) 
-             LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvousdepartement` d ON (d.`id_priserendezvousdepartement` = cr.`id_priserendezvouscreneaux`) 
-         LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvouscreneaux` cr ON (cr.`id_priserendezvouscreneaux` = r.`id_priserendezvous`)
-           LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvousdepartement_lang` dl ON (dl.`id_priserendezvouscreneaux` = d.`id_priserendezvousdepartement`)
-           where cl.id_lang='.$id_lang;
+        $sql = 'SELECT dl.`*`, cr.`*`
+            FROM `' . _DB_PREFIX_ . 'priserendezvouscreneaux`cr 
+            LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvousdepartement` d ON (d.`id_priserendezvousdepartement` = cr.`id_priserendezvousdepartement`) 
+        
+           LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvousdepartement_lang` dl ON (dl.`id_priserendezvousdepartement` = d.`id_priserendezvousdepartement`)
+           where dl.id_lang='.$id_lang;
+
+
+
+        $content = Db::getInstance()->executeS($sql);
+
+        return $content;
+    }
+    protected function getListContentDepartement($id_lang = null)
+    {
+        if (is_null($id_lang))
+            $id_lang = (int) Configuration::get('PS_LANG_DEFAULT');
+
+        $sql = 'SELECT dl.`*`, d.`*`
+            FROM `' . _DB_PREFIX_ . 'priserendezvousdepartement`d 
+           LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvousdepartement_lang` dl ON (dl.`id_priserendezvousdepartement` = d.`id_priserendezvousdepartement`)
+           where dl.id_lang='.$id_lang;
 
 
 
@@ -227,7 +293,7 @@ class Priserendezvous extends Module
     /**
      * Create the form that will be displayed in the configuration of your module.
      */
-    protected function renderForm()
+    protected function renderFormR()
     {
         $helper = new HelperForm();
 
@@ -251,7 +317,317 @@ class Priserendezvous extends Module
 
         return $helper->generateForm(array($this->getConfigForm()));
     }
+    public function getDepartementList()
+    {
+        $hooks = array();
+        $id_lang = (int) Configuration::get('PS_LANG_DEFAULT');
+        $sql = 'SELECT  pl.`nom_departement` as name,p.`id_priserendezvousdepartement`
+            FROM `' . _DB_PREFIX_ . 'priserendezvousdepartement`p 
+            LEFT JOIN '._DB_PREFIX_.'priserendezvousdepartement_lang pl ON (p.id_priserendezvousdepartement = pl.id_priserendezvousdepartement) where pl.id_lang = '.$id_lang;
 
+
+        $content = Db::getInstance()->executeS($sql);
+        foreach ($content as $row=>$hook) {
+            $hooks[$row]['key'] = $hook['id_priserendezvousdepartement'];
+            $hooks[$row]['name'] = $hook['name'];
+        }
+        //return $content;
+        return $hooks;
+    }
+    protected function renderForm()
+    {
+        $default_lang = (int) Configuration::get('PS_LANG_DEFAULT');
+        $departs = $this->getDepartementList();
+        $fields_form = array(
+            'tinymce' => true,
+            'legend' => array(
+                'title' => $this->l('New Crenneaux Horaire')
+            ),
+            'input' => array(
+                'id_priserendezvouscreneaux' => array(
+                    'type' => 'hidden',
+                    'name' => 'id_priserendezvouscreneaux'
+                ),
+                array(
+                    'type'    => 'select',
+                    'label'   => $this->l('Select Departement'),
+                    'name'    => 'id_priserendezvousdepartement',
+                    'hint'    => $this->l('Select Departement'),
+                    'options' => array(
+                        'query' => $departs,
+                        'id'    => 'key',
+                        'name'  => 'name'
+                    )
+                ),
+                array(
+                    'type' => 'text',
+                    'lang' => false,
+                    'label' => $this->l('Heure Debut:'),
+                    'name' => 'hdebut',
+                    'required' => true
+                ),
+                array(
+                    'type' => 'text',
+                    'lang' => false,
+                    'label' => $this->l('Minuite Debut:'),
+                    'name' => 'mdebut',
+                    'required' => true
+                ),
+                array(
+                    'type' => 'text',
+                    'lang' => false,
+                    'label' => $this->l('Heure Fin:'),
+                    'name' => 'hfin',
+                    'required' => true
+                ),
+                array(
+                    'type' => 'text',
+                    'lang' => false,
+                    'label' => $this->l('Minuite Fin:'),
+                    'name' => 'mfin',
+                    'required' => true
+                )
+            ),
+            'submit' => array(
+                'title' => $this->l('Save'),
+                'name'=>'saveCrenneaux'
+            ),
+            'buttons' => array(
+                array(
+                    'href' => AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'),
+                    'title' => $this->l('Back to list'),
+                    'icon' => 'process-icon-back'
+                )
+            )
+        );
+
+        $helper                  = new HelperForm();
+        $helper->module          = $this;
+        //$helper->name_controller = 'faq';
+        $helper->identifier      = $this->identifier;
+        $helper->token           = Tools::getAdminTokenLite('AdminModules');
+        foreach (Language::getLanguages(false) as $lang)
+            $helper->languages[] = array(
+                'id_lang' => $lang['id_lang'],
+                'iso_code' => $lang['iso_code'],
+                'name' => $lang['name'],
+                'is_default' => ($default_lang == $lang['id_lang'] ? 1 : 0)
+            ); /**/
+
+        $helper->currentIndex             = AdminController::$currentIndex . '&configure=' . $this->name;
+        $helper->default_form_language    = $default_lang;
+        $helper->allow_employee_form_lang = $default_lang;/**/
+        $helper->toolbar_scroll           = true;
+        $helper->title                    = $this->displayName;
+        $helper->submit_action            = 'saveCrenneaux';
+
+        $helper->fields_value = $this->getFormValues();
+
+        return $helper->generateForm(array(
+            array(
+                'form' => $fields_form
+            )
+        ));
+    }
+    protected function renderFormDepartement()
+    {
+        $default_lang = (int) Configuration::get('PS_LANG_DEFAULT');
+       // $departs = $this->getDepartementList();
+        $fields_form = array(
+            'tinymce' => true,
+            'legend' => array(
+                'title' => $this->l('New Departement')
+            ),
+            'input' => array(
+                'id_priserendezvousdepartement' => array(
+                    'type' => 'hidden',
+                    'name' => 'id_priserendezvousdepartement'
+                ),
+                array(
+                    'type' => 'text',
+                    'lang' => true,
+                    'label' => $this->l('Nom Du Departement:'),
+                    'name' => 'nom_departement',
+                    'required' => true
+                ),
+                array(
+                    'type' => 'text',
+                    'lang' => false,
+                    'label' => $this->l('Telephone:'),
+                    'name' => 'telephone',
+                    'required' => true
+                )
+            ),
+            'submit' => array(
+                'title' => $this->l('Save'),
+                'name'=>'saveDepartement'
+            ),
+            'buttons' => array(
+                array(
+                    'href' => AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'),
+                    'title' => $this->l('Back to list'),
+                    'icon' => 'process-icon-back'
+                )
+            )
+        );
+
+        $helper                  = new HelperForm();
+        $helper->module          = $this;
+        //$helper->name_controller = 'faq';
+        $helper->identifier      = $this->identifier;
+        $helper->token           = Tools::getAdminTokenLite('AdminModules');
+        foreach (Language::getLanguages(false) as $lang)
+            $helper->languages[] = array(
+                'id_lang' => $lang['id_lang'],
+                'iso_code' => $lang['iso_code'],
+                'name' => $lang['name'],
+                'is_default' => ($default_lang == $lang['id_lang'] ? 1 : 0)
+            ); /**/
+
+        $helper->currentIndex             = AdminController::$currentIndex . '&configure=' . $this->name;
+        $helper->default_form_language    = $default_lang;
+        $helper->allow_employee_form_lang = $default_lang;/**/
+        $helper->toolbar_scroll           = true;
+        $helper->title                    = $this->displayName;
+        $helper->submit_action            = 'saveDepartement';
+
+        $helper->fields_value = $this->getFormValuesDepartement();
+
+        return $helper->generateForm(array(
+            array(
+                'form' => $fields_form
+            )
+        ));
+    }
+    public function getFormValues()
+    {
+        $fields_value = array();
+
+        $id_priserendezvouscreneaux        = (int) Tools::getValue('id_priserendezvouscreneaux');
+        if($id_priserendezvouscreneaux ){
+            $info              = new Priserendezvouscreneaux((int) $id_priserendezvouscreneaux);
+            $fields_value['hdebut'] = $info->hdebut;
+            $fields_value['hfin']   = $info->hfin;
+            $fields_value['mdebut'] = $info->mdebut;
+            $fields_value['mfin']   = $info->mfin;
+            $fields_value['id_priserendezvousdepartement']   = $info->id_priserendezvousdepartement;
+        }else{
+            $fields_value['hdebut']   = Tools::getValue('hdebut');
+            $fields_value['hfin']   = Tools::getValue('hfin');
+            $fields_value['mdebut']   = Tools::getValue('mdebut');
+            $fields_value['mfin']   = Tools::getValue('mfin');
+            $fields_value['id_priserendezvousdepartement']   = Tools::getValue('id_priserendezvousdepartement');
+        }
+
+        /*   foreach (Language::getLanguages(false) as $lang) {
+               if ($id_questionnaireDevis) {
+                   $info                                             = new DemandeDevisQuestionaire((int) $id_questionnaireDevis);
+                   $fields_value['libelle'][(int) $lang['id_lang']] = $info->libelle[(int) $lang['id_lang']];
+                   $fields_value['id_produit']   = $info->id_produit;
+               } else {
+                   $fields_value['libelle'][(int) $lang['id_lang']] = Tools::getValue('libelle_' . (int) $lang['id_lang'], '');
+                   $fields_value['id_produit']   = Tools::getValue('id_produit');
+               }
+           }*/
+
+        $fields_value['id_priserendezvouscreneaux'] = (int) Tools::getValue('id_priserendezvouscreneaux');
+
+        return $fields_value;
+    }
+    public function getFormValuesDepartement()
+    {
+        $fields_value = array();
+
+        $id_priserendezvousdepartement        = (int) Tools::getValue('id_priserendezvousdepartement');
+        foreach (Language::getLanguages(false) as $lang) {
+            if ($id_priserendezvousdepartement) {
+                $info = new Priserendezvousdepartement((int)$id_priserendezvousdepartement);
+                $fields_value['nom_departement'] = $info->nom_departement;
+                $fields_value['telephone'] = $info->telephone;
+                $fields_value['id_priserendezvousdepartement'] = $info->id_priserendezvousdepartement;
+            } else {
+                $fields_value['nom_departement'] = Tools::getValue('nom_departement');
+                $fields_value['telephone'] = Tools::getValue('telephone');
+                $fields_value['id_priserendezvousdepartement'] = Tools::getValue('id_priserendezvousdepartement');
+            }
+        }
+        /*   foreach (Language::getLanguages(false) as $lang) {
+               if ($id_questionnaireDevis) {
+                   $info                                             = new DemandeDevisQuestionaire((int) $id_questionnaireDevis);
+                   $fields_value['libelle'][(int) $lang['id_lang']] = $info->libelle[(int) $lang['id_lang']];
+                   $fields_value['id_produit']   = $info->id_produit;
+               } else {
+                   $fields_value['libelle'][(int) $lang['id_lang']] = Tools::getValue('libelle_' . (int) $lang['id_lang'], '');
+                   $fields_value['id_produit']   = Tools::getValue('id_produit');
+               }
+           }*/
+
+        $fields_value['id_priserendezvousdepartement'] = (int) Tools::getValue('id_priserendezvousdepartement');
+
+        return $fields_value;
+    }
+    public function processSaveCrenneaux()
+    {
+        if ($id_priserendezvouscreneaux = Tools::getValue('id_priserendezvouscreneaux'))
+            $info = new Priserendezvouscreneaux((int) $id_priserendezvouscreneaux);
+        else {
+            $info = new Priserendezvouscreneaux();
+        }
+
+        $languages = Language::getLanguages(false);
+
+        $text  = array();
+        $text1 = array();
+
+        foreach ($languages AS $lang) {
+            $text1[$lang['id_lang']]=Tools::getValue('libelle_' . $lang['id_lang']);
+        }
+
+        $info->id_priserendezvousdepartement = (int)Tools::getValue('id_priserendezvousdepartement');
+        $info->id_priserendezvouscreneaux   = Tools::getValue('id_priserendezvouscreneaux');
+        $info->hdebut   =  Tools::getValue('hdebut');
+        $info->hfin   =  Tools::getValue('hfin');
+        $info->mdebut   =  Tools::getValue('mdebut');
+        $info->mfin   =  Tools::getValue('mfin');
+        $saved = $info->save();
+
+        if ($saved)
+            $this->html .= $this->renderForm();
+        else
+            $this->html .= '<div class="alert alert-danger conf error">' . $this->l('An error occurred while attempting to save.') . '</div>';
+
+        return $this->html;
+
+    }
+    public function processSaveDepartement()
+    {
+        if ($id_priserendezvousdepartement = Tools::getValue('id_priserendezvousdepartement'))
+            $info = new Priserendezvousdepartement((int) $id_priserendezvousdepartement);
+        else {
+            $info = new Priserendezvousdepartement();
+        }
+
+        $languages = Language::getLanguages(false);
+        $text1 = array();
+
+        foreach ($languages AS $lang) {
+          //  $text1[$lang['id_lang']]=Tools::getValue('nom_departement_'.$lang['id_lang']);
+            $info->nom_departement[$lang['id_lang']]=Tools::getValue('nom_departement_'.$lang['id_lang']);
+        }
+
+        $info->id_priserendezvousdepartement = (int)Tools::getValue('id_priserendezvousdepartement');
+        $info->telephone   = Tools::getValue('telephone');
+       // $info->nom_departement  = $text1;
+        $saved = $info->save();
+
+        if ($saved)
+            $this->html .= $this->renderFormDepartement();
+        else
+            $this->html .= '<div class="alert alert-danger conf error">' . $this->l('An error occurred while attempting to save.') . '</div>';
+
+        return $this->html;
+
+    }
     /**
      * Create the structure of your form.
      */
