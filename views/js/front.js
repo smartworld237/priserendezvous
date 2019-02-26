@@ -81,7 +81,114 @@ function init(day) {
     thead=document.getElementById("week-change");
     thead.innerHTML="";
     let row = document.createElement("tr");
-    for (let i=0;i<7;i++){
+    if(toDay===0){
+        for (let i=0;i<8;i++){
+            cell = document.createElement("td");
+            let d=day+i;
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode(new Date((day+i)).toDateString())
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+    }else if(toDay===1){
+        cell = document.createElement("td");
+        cellText = document.createTextNode(jours[0]);
+        cellText2=document.createTextNode(day.setDate(day.getDate() - 1));
+        cell.appendChild(cellText);cell.appendChild(cellText2);
+        row.appendChild(cell);
+        for (let i=1;i<7;i++){
+            cell = document.createElement("td");
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode(new Date(day.getDate() + 1).toDateString())
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+    }else if (toDay === 2) {
+        for (let i=1;i>0;i--){
+            cell = document.createElement("td");
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode((day.setDate(day.getDate() - 1)).toDateString());
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+        for (let i=2;i<8;i++){
+            cell = document.createElement("td");
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode((day.setDate(day.getDate() + 1)).toDateString());
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+    }else if (toDay === 3) {
+        for (let i=2;i>0;i--){
+            cell = document.createElement("td");
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode(new Date((day-i)).toDateString());
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+        for (let i=3;i<7;i++){
+            cell = document.createElement("td");
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode(new Date((day+i)).toDateString())
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+    }else if (toDay === 4) {
+        for (let i=3;i>0;i--){
+            cell = document.createElement("td");
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode(new Date((day-i)).toDateString())
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+        for (let i=4;i<7;i++){
+            cell = document.createElement("td");
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode(new Date((day+i)).toDateString())
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+    }else if (toDay === 5) {
+        for (let i=4;i>0;i--){
+            cell = document.createElement("td");
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode(new Date((day-i)).toDateString())
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+        for (let i=5;i<7;i++){
+            cell = document.createElement("td");
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode(new Date((day+i)).toDateString())
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+    }else if (toDay === 6) {
+        for (let i=5;i>0;i--){
+            cell = document.createElement("td");
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode(new Date((day-i)).toDateString())
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+        for (let i=6;i<7;i++){
+            cell = document.createElement("td");
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode(new Date((day+i)).toDateString())
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+    }else if (toDay === 7) {
+        for (let i=7;i>0;i--){
+            cell = document.createElement("td");
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode(new Date((day-i)).toDateString())
+            cell.appendChild(cellText);cell.appendChild(cellText2);
+            row.appendChild(cell);
+        }
+
+    }
+   /* for (let i=0;i<7;i++){
         //toLocaleFormat('%d-%b-%Y');
         if(i<toDay){
             cell = document.createElement("td");
@@ -90,27 +197,21 @@ function init(day) {
             cellText2=document.createTextNode(new Date((day+i)).toDateString())
             cell.appendChild(cellText);cell.appendChild(cellText2);
             row.appendChild(cell);
-        }/*else if(i=today){
-            cell = document.createElement("td");
-            cell.classList.add("bg-info");
-            cellText = document.createTextNode(jours[i]);
-            cell.appendChild(cellText);
-            row.appendChild(cell);
-        }*/else {
+        }else {
 
             cell = document.createElement("td");
             if(i === toDay){
                 cell.classList.add("bg-info");
             }
-            /*if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
+            /!*if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
                 cell.classList.add("bg-info");
-            }*/ // color today's date
+            }*!/ // color today's date
             cellText = document.createTextNode(new Date(day)+i);
             cell.appendChild(cellText);
             row.appendChild(cell);
         }
 
-    }
+    }*/
     thead.appendChild(row);
 
 }
