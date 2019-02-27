@@ -29,14 +29,68 @@ $(document).ready(function () {
     var $searchWidget = $('#url');
     //var $searchBox    = $("select[class=dd_select]", $element).val()
     var searchURL     = $searchWidget.attr('data-search-controller-url');
+    $.ajax({
+        url : $('#url').val(),
+        type : 'GET',
+        dataType : 'json',
+        data:'action_name',
+        success : function(resultat, statut){ // success est toujours en place, bien sûr !
+            console.log(resultat);
+            // swal(nameProduct, "is added to cart !", "success");
+        },
+
+        error : function(resultat, statut, erreur){
+
+        }
+
+    });
     var day=new Date();
+   // init2(day);
     var jours2=["Monday","Tuesday","Wednesday","Jeudi","vendredi","samedi","Dimanche"];
+    function init2(day) {
 
+        var $thead=$('#week-change');
+        $thead.innerHTML="";
+        var $row = $thead.append("<tr>");
 
+        for (let i=0;i<7;i++){
+            var d2 = addDays(day, i);
+            cell = $row.append("<td>"+d2.toDateString());
+            cellText = document.createTextNode(jours[i]);
+            cellText2=document.createTextNode(d2.toDateString());
+            //cell.appendChild(cellText);
+           // cell.append(cellText2);
+            $row.append(cell);
+        }
+        $thead.append($row);
+
+    }
+    $('#next1').on('click',function () {
+
+        day.setDate(day.getDate()+7);
+        //alert(today);
+        this.init(day);
+    });
+    $('#previous1').on('click',function () {
+        day.setDate(day.getDate()-7);
+        this.init(day);
+    });
+    function nextWeek() {
+        day.setDate(day.getDate()+7);
+        //alert(today);
+        init(day);
+    }
+    function previousWeek() {
+        day.setDate(day.getDate()-7);
+        init(day);
+    }
 });
 today = new Date();
 jours = ["Dimanche","Monday","Tuesday","Wednesday","Jeudi","vendredi","samedi"];
 init(today);
+
+var url     =$('#url').val();
+alert(url);
 currentMonth = today.getMonth();
 currentYear = today.getFullYear();
 selectYear = document.getElementById("year");
@@ -68,12 +122,11 @@ function jump() {
 }
 function nextWeek() {
     today.setDate(today.getDate()+7);
-    alert(today);
+    //alert(today);
     init(today);
 }
 function previousWeek() {
     today.setDate(today.getDate()-7);
-    alert(today);
     init(today);
 }
 function init(day) {
@@ -81,139 +134,50 @@ function init(day) {
     thead=document.getElementById("week-change");
     thead.innerHTML="";
     let row = document.createElement("tr");
-    if(toDay===0){
-        for (let i=0;i<8;i++){
-            cell = document.createElement("td");
-            let d=day+i;
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode(new Date((day+i)).toDateString())
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
+   /* $.ajax({
+        url : url,
+        type : 'GET',
+        dataType : 'json',
+        data:'action_name',
+        success : function(resultat, statut){ // success est toujours en place, bien sûr !
+            console.log(resultat);
+            // swal(nameProduct, "is added to cart !", "success");
+        },
+
+        error : function(resultat, statut, erreur){
+
         }
-    }else if(toDay===1){
+
+    });*/
+    for (let i=0;i<7;i++){
+        var d2 = addDays(day, i);
         cell = document.createElement("td");
-        cellText = document.createTextNode(jours[0]);
-        cellText2=document.createTextNode(day.setDate(day.getDate() - 1));
-        cell.appendChild(cellText);cell.appendChild(cellText2);
+        cellText = document.createTextNode(jours[i]);
+        cellText2=document.createTextNode(d2.toDateString());
+        //cell.appendChild(cellText);
+        cell.appendChild(cellText2);
         row.appendChild(cell);
-        for (let i=1;i<7;i++){
-            cell = document.createElement("td");
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode(new Date(day.getDate() + 1).toDateString())
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }
-    }else if (toDay === 2) {
-        for (let i=1;i>0;i--){
-            cell = document.createElement("td");
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode((day.setDate(day.getDate() - 1)).toDateString());
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }
-        for (let i=2;i<8;i++){
-            cell = document.createElement("td");
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode((day.setDate(day.getDate() + 1)).toDateString());
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }
-    }else if (toDay === 3) {
-        for (let i=2;i>0;i--){
-            cell = document.createElement("td");
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode(new Date((day-i)).toDateString());
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }
-        for (let i=3;i<7;i++){
-            cell = document.createElement("td");
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode(new Date((day+i)).toDateString())
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }
-    }else if (toDay === 4) {
-        for (let i=3;i>0;i--){
-            cell = document.createElement("td");
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode(new Date((day-i)).toDateString())
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }
-        for (let i=4;i<7;i++){
-            cell = document.createElement("td");
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode(new Date((day+i)).toDateString())
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }
-    }else if (toDay === 5) {
-        for (let i=4;i>0;i--){
-            cell = document.createElement("td");
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode(new Date((day-i)).toDateString())
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }
-        for (let i=5;i<7;i++){
-            cell = document.createElement("td");
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode(new Date((day+i)).toDateString())
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }
-    }else if (toDay === 6) {
-        for (let i=5;i>0;i--){
-            cell = document.createElement("td");
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode(new Date((day-i)).toDateString())
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }
-        for (let i=6;i<7;i++){
-            cell = document.createElement("td");
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode(new Date((day+i)).toDateString())
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }
-    }else if (toDay === 7) {
-        for (let i=7;i>0;i--){
-            cell = document.createElement("td");
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode(new Date((day-i)).toDateString())
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }
-
     }
-   /* for (let i=0;i<7;i++){
-        //toLocaleFormat('%d-%b-%Y');
-        if(i<toDay){
-            cell = document.createElement("td");
-            let d=day+i;
-            cellText = document.createTextNode(jours[i]);
-            cellText2=document.createTextNode(new Date((day+i)).toDateString())
-            cell.appendChild(cellText);cell.appendChild(cellText2);
-            row.appendChild(cell);
-        }else {
-
-            cell = document.createElement("td");
-            if(i === toDay){
-                cell.classList.add("bg-info");
-            }
-            /!*if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
-                cell.classList.add("bg-info");
-            }*!/ // color today's date
-            cellText = document.createTextNode(new Date(day)+i);
-            cell.appendChild(cellText);
-            row.appendChild(cell);
-        }
-
-    }*/
     thead.appendChild(row);
 
+}
+function addDays(date, amount) {
+    var tzOff = date.getTimezoneOffset() * 60 * 1000,
+        t = date.getTime(),
+        d = new Date(),
+        tzOff2;
+
+    t += (1000 * 60 * 60 * 24) * amount;
+    d.setTime(t);
+
+    tzOff2 = d.getTimezoneOffset() * 60 * 1000;
+    if (tzOff != tzOff2) {
+        var diff = tzOff2 - tzOff;
+        t += diff;
+        d.setTime(t);
+    }
+
+    return d;
 }
 function showCalendar(month, year) {
     //alert("test");

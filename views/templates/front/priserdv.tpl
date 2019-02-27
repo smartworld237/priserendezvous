@@ -26,10 +26,11 @@
 {block name='content'}
 
     <div class="container">
+        {$test}
         <h1>{l s='Prendre un rendez-vous' d='Modules.demandedevis'}</h1>
         <div class="row">
             <div class="col-md-3 pull-right form-inline">
-
+<input type="hidden" id="url" value="{$prise_controller_url}">
                 <button class="btn btn-primary col-sm-6" id="previous" onclick="previousWeek()"><i class="fa fa-arrow-circle-left"></i> Previous</button>
 
                 <button class="btn btn-primary col-sm-6" id="next" onclick="nextWeek()">Next <i class="fa fa-arrow-circle-right"></i></button>
