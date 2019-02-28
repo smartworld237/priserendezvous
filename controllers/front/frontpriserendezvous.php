@@ -12,7 +12,8 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
      * @see FrontController::initContent()
      */
     public function initContent()
-    {
+    { parent::initContent();
+    //$this->ajax = true; // enable ajax
         $tres="merci";
         $parameters = array();
         $this->context->smarty->assign(array(
@@ -20,22 +21,16 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
             'test' => $tres,
             'prise_controller_url' => $this->context->link->getModuleLink('priserendezvous', 'frontpriserendezvous', $parameters)
         ));
-        parent::initContent();
-        if (Tools::isSubmit('submitbackup')) {
-            $this->context->smarty->assign(array(
-                //'orders' => $this->getProducts(),
-                'test' => 'reza',
-            ));
-            $this->processService();
-        }
-        $this->setTemplate('module:priserendezvous/views/templates/front/priserdv.tpl');
-if(Tools::getValue("action_name")){
-   // $tres="azerty";
-      $response=Customer::getCustomers();
-    $json = Tools::jsonEncode($response);
-    $this->ajaxDie($json);
-}
+
+        if(Tools::getValue("action_reponse")){
+        $response=Priserendezvouscreneaux::getCrenneaux(1);
+        $json = Tools::jsonEncode($response);
+         $this->ajaxDie($json);
+
     }
+
+        $this->setTemplate('module:priserendezvous/views/templates/front/priserdv.tpl');
+}
 
     public function processService()
     {

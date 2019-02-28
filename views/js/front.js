@@ -29,8 +29,8 @@ $(document).ready(function () {
     var $searchWidget = $('#url');
     //var $searchBox    = $("select[class=dd_select]", $element).val()
     var searchURL     = $searchWidget.attr('data-search-controller-url');
-    $.ajax({
-        url : $('#url').val(),
+    /*$.ajax({
+        url : $('').val(),
         type : 'GET',
         dataType : 'json',
         data:'action_name',
@@ -43,7 +43,7 @@ $(document).ready(function () {
 
         }
 
-    });
+    });*/
     var day=new Date();
    // init2(day);
     var jours2=["Monday","Tuesday","Wednesday","Jeudi","vendredi","samedi","Dimanche"];
@@ -90,7 +90,7 @@ jours = ["Dimanche","Monday","Tuesday","Wednesday","Jeudi","vendredi","samedi"];
 init(today);
 
 var url     =$('#url').val();
-alert(url);
+
 currentMonth = today.getMonth();
 currentYear = today.getFullYear();
 selectYear = document.getElementById("year");
@@ -134,21 +134,38 @@ function init(day) {
     thead=document.getElementById("week-change");
     thead.innerHTML="";
     let row = document.createElement("tr");
-   /* $.ajax({
+    $.ajax({
         url : url,
         type : 'GET',
         dataType : 'json',
-        data:'action_name',
+        data:{
+            action_reponse:'action_reponse'
+        },
         success : function(resultat, statut){ // success est toujours en place, bien sûr !
-            console.log(resultat);
-            // swal(nameProduct, "is added to cart !", "success");
+            //console.log(resultat);
+            tbody=document.getElementById("body-week");
+            tbody.innerHTML="";
+
+            for (index = 0, len = resultat.length; index < len; ++index) {
+              /*  let trow = document.createElement("tr");
+                $trow= $('body-week').append('<tr>');
+                tcell1 = document.createElement("td");
+                $trow.append("<td>"+len);*/
+             /*   tcellText = document.createTextNode(len);
+                tcell.appendChild(tcellText);
+                trow.appendChild(tcell);*/
+             addRow();
+                console.log(len);
+               // tbody.appendChild($trow);
+            }
+
         },
 
         error : function(resultat, statut, erreur){
 
         }
 
-    });*/
+    });/**/
     for (let i=0;i<7;i++){
         var d2 = addDays(day, i);
         cell = document.createElement("td");
@@ -178,6 +195,41 @@ function addDays(date, amount) {
     }
 
     return d;
+}
+// ADD A NEW ROW TO THE TABLE.s
+function addRow() {
+    var empTab = document.getElementById('week');
+
+    var rowCnt = empTab.rows.length;        // GET TABLE ROW COUNT.
+    var tr = empTab.insertRow(rowCnt);      // TABLE ROW.
+    tr = empTab.insertRow(rowCnt);
+
+    for (var c = 0; c < 7; c++) {
+        var td = document.createElement('td');          // TABLE DEFINITION.
+        td = tr.insertCell(c);
+
+        if (c == 0) {           // FIRST COLUMN.
+            // ADD A BUTTON.
+            var button = document.createElement('input');
+
+            // SET INPUT ATTRIBUTE.
+            button.setAttribute('type', 'button');
+            button.setAttribute('value', 'Remove');
+
+            // ADD THE BUTTON's 'onclick' EVENT.
+            button.setAttribute('onclick', 'removeRow(this)');
+
+            td.appendChild(button);
+        }
+        else {
+            // CREATE AND ADD TEXTBOX IN EACH CELL.
+            var ele = document.createElement('input');
+            ele.setAttribute('type', 'text');
+            ele.setAttribute('value', '');
+
+            td.appendChild(ele);
+        }
+    }
 }
 function showCalendar(month, year) {
     //alert("test");

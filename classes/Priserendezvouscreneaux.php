@@ -29,4 +29,13 @@ class Priserendezvouscreneaux extends ObjectModel
         ),
 
     );
+    public function getCrenneaux($iddepartement){
+        $sql = 'SELECT  d.`*`
+            FROM `' . _DB_PREFIX_ . 'priserendezvouscreneaux`d
+            where  d.id_priserendezvousdepartement ='.$iddepartement;
+
+        $content = Db::getInstance()->executeS($sql);
+
+        return $content;
+    }
 }

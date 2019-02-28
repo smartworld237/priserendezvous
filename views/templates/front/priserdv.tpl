@@ -31,30 +31,15 @@
         <div class="row">
             <div class="col-md-3 pull-right form-inline">
 <input type="hidden" id="url" value="{$prise_controller_url}">
-                <button class="btn btn-primary col-sm-6" id="previous" onclick="previousWeek()"><i class="fa fa-arrow-circle-left"></i> Previous</button>
+                {*<button type="submit" name="action">test</button>*}
+                <button type="submit" class="btn btn-primary col-sm-6" name="action" id="previous" onclick="previousWeek()"><i class="fa fa-arrow-circle-left"></i> Previous</button>
 
                 <button class="btn btn-primary col-sm-6" id="next" onclick="nextWeek()">Next <i class="fa fa-arrow-circle-right"></i></button>
             </div>
             <table class="table table-bordered" id="week">
                 <thead id="week-change"  style="background-color: #0f6ab4;color: #0a0a0a"></thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td colspan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                </tr>
+                <tbody id="body-week">
+
                 </tbody>
 
             </table>
