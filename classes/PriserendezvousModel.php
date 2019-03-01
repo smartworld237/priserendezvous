@@ -6,14 +6,14 @@
  * Time: 17:59
  */
 
-class Priserendezvous extends ObjectModel
+class PriserendezvousModel extends ObjectModel
 {
     public $id_priserendezvous;
     public $id_client;
     public $id_priserendezvouscreneaux;
     public $jour;
     public static $definition = array(
-        'table' => 'priserendezvous',
+        'table' => 'Priserendezvous',
         'primary' => 'id_priserendezvous',
         // 'multilang' => true,
         'fields' => array(
@@ -25,5 +25,18 @@ class Priserendezvous extends ObjectModel
         ),
 
     );
+public function getRendezVs($id_crenneaux,$jours){
+    $result=false;
+    $sql = 'SELECT EXISTS(SELECT  d.`*`
+            FROM `' . _DB_PREFIX_ . 'priserendezvous`d
+            where  d.id_priserendezvouscreneaux ='.$id_crenneaux.' and d.jour='.$jours.')';
 
+    $content = Db::getInstance()->executeS($sql);
+if($content=== null){
+    $result=false;
+}else{
+    $result=true;
+}
+    return $content;
+}
 }

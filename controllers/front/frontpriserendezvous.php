@@ -6,6 +6,8 @@
  * Time: 18:16
  */
 
+require_once _PS_MODULE_DIR_ . 'priserendezvous/classes/PriserendezvousModel.php';
+
 class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFrontController
 {
     /**
@@ -27,11 +29,36 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
         $json = Tools::jsonEncode($response);
          $this->ajaxDie($json);
 
-    }
+    }else if(Tools::getValue("action")){
+            /*$customer = $this->context->customer;*/
+            $rendezvs= new PriserendezvousModel();
+            $rendezvs->id_client=Customer::customerIdExistsStatic(1);
+           $rendezvs->jour=Tools::getValue("jour");
+            //$rendezvs->jour=new Date();
+            $rendezvs->id_priserendezvouscreneaux=Tools::getValue("id_crenneaux");
+            $rendezvs->save();
+            //$response=Priserendezvouscreneaux::getCrenneaux(1);
+            $json = Tools::jsonEncode($rendezvs);
+            $this->ajaxDie($json);
+        }else if(Tools::getValue("rendevs")){
+           $rendezvs=$this->getRendezVs2(Tools::getValue("id_crenneaux"),Tools::getValue("jour"));
+            //$response=Priserendezvouscreneaux::getCrenneaux(1);
+            $json = Tools::jsonEncode($rendezvs);
+            $this->ajaxDie($json);
+        }
 
         $this->setTemplate('module:priserendezvous/views/templates/front/priserdv.tpl');
 }
+    public function getRendezVs2($id_crenneaux,$jours){
 
+        $sql = 'SELECT EXISTS(SELECT  d.`id_priserendezvous`
+            FROM `' . _DB_PREFIX_ . 'priserendezvous`d
+            where  d.id_priserendezvouscreneaux ='.$id_crenneaux.' and d.jour='.$jours.') as result';
+
+        $content = Db::getInstance()->executeS($sql);
+
+        return $content;
+    }
     public function processService()
     {
         $customer = $this->context->customer;

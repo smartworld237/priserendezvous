@@ -5,7 +5,7 @@
  * Date: 18/02/2019
  * Time: 11:27
  */
-
+require_once _PS_MODULE_DIR_ . 'priserendezvous/classes/PriserendezvousModel.php';
 class AdminPriserendezvousController extends ModuleAdminController
 {
     public function __construct()
@@ -14,10 +14,11 @@ class AdminPriserendezvousController extends ModuleAdminController
         $this->addRowAction('delete');
 
 // Set variables
-        $this->table = 'priserendezvous';
-        $this->className = 'Priserendezvous';
+        $this->table = 'Priserendezvous';
+        $this->className = 'PriserendezvousModel';
         $this->identifier = 'id_priserendezvous';
         //$this->lang = true;
+        $id_lang = (int) Configuration::get('PS_LANG_DEFAULT');
         $this->fields_list = array(
             'id_priserendezvous' => array('title' => "ID", 'align' =>
                 'center', 'width' => 25),
@@ -43,9 +44,10 @@ class AdminPriserendezvousController extends ModuleAdminController
         );
         $this->_select = ' a.`*`, cr.`*`,dl.`*`, c.`firstname` as client';
         $this->_join='LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON (a.`id_client` = c.`id_customer`) 
-         LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvouscreneaux` cr ON (a.`id_priserendezvouscreneaux` = a.`id_priserendezvous`)
+         LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvouscreneaux` cr ON (a.`id_priserendezvouscreneaux` = cr.`id_priserendezvouscreneaux`)
            LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvousdepartement` d ON (cr.`id_priserendezvousdepartement` = d.`id_priserendezvousdepartement`)
             LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvousdepartement_lang` dl ON (dl.`id_priserendezvousdepartement` = d.`id_priserendezvousdepartement`)';
+        $this->_where='and dl.id_lang='.$id_lang;
         $this->bulk_actions = array(
             'delete' => array(
                 'text' => 'Delete selected',

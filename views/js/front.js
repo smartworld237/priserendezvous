@@ -99,7 +99,7 @@ selectMonth = document.getElementById("month");
 months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 monthAndYear = document.getElementById("monthAndYear");
-showCalendar(currentMonth, currentYear);
+//showCalendar(currentMonth, currentYear);
 
 
 function next() {
@@ -134,6 +134,17 @@ function init(day) {
     thead=document.getElementById("week-change");
     thead.innerHTML="";
     let row = document.createElement("tr");
+    for (let i=0;i<7;i++){
+        var d2 = addDays(day, i);
+        $('#week-change').append('<td>'+d2.toDateString()+'</td>');
+       /* cell = document.createElement("td");
+        cellText = document.createTextNode(jours[i]);
+        cellText2=document.createTextNode(d2.toDateString());
+        //cell.appendChild(cellText);
+        cell.appendChild(cellText2);
+        row.appendChild(cell);*/
+
+    }
     $.ajax({
         url : url,
         type : 'GET',
@@ -142,22 +153,35 @@ function init(day) {
             action_reponse:'action_reponse'
         },
         success : function(resultat, statut){ // success est toujours en place, bien sûr !
-            //console.log(resultat);
-            tbody=document.getElementById("body-week");
-            tbody.innerHTML="";
+            $.each( resultat, function( key, value ) {
+                for (let i = 1; i < 2; i++) {
+                    $('#body-week').append('<tr>');
+                for (let j=0;j<7;j++) {
+                    //console.log(j + "-" + key);
+                    var daz = addDays(day, j);
+                    $.ajax({
+                        url : url,
+                        type : 'GET',
+                        dataType : 'json',
+                        data:{
+                            action:'rendevs',
+                            jour:daz.toISOString(),
+                            id_crenneaux:value.id_priserendezvouscreneaux
+                        },
+                        success : function(result, statut){ // success est toujours en place, bien sûr !
+                            console.log(result);
+                        },
 
-            for (index = 0, len = resultat.length; index < len; ++index) {
-              /*  let trow = document.createElement("tr");
-                $trow= $('body-week').append('<tr>');
-                tcell1 = document.createElement("td");
-                $trow.append("<td>"+len);*/
-             /*   tcellText = document.createTextNode(len);
-                tcell.appendChild(tcellText);
-                trow.appendChild(tcell);*/
-             addRow();
-                console.log(len);
-               // tbody.appendChild($trow);
-            }
+                        error : function(result, statut, erreur){
+
+                        }
+
+                    });
+                    $('tr:last').append('<td class="disabled"><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning ">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
+                        '<span class="hidden">'+daz.toISOString()+'</span>');
+                }
+                }
+            });
 
         },
 
@@ -165,19 +189,38 @@ function init(day) {
 
         }
 
-    });/**/
-    for (let i=0;i<7;i++){
-        var d2 = addDays(day, i);
-        cell = document.createElement("td");
-        cellText = document.createTextNode(jours[i]);
-        cellText2=document.createTextNode(d2.toDateString());
-        //cell.appendChild(cellText);
-        cell.appendChild(cellText2);
-        row.appendChild(cell);
-    }
-    thead.appendChild(row);
+    });
+   // thead.appendChild(row);
 
 }
+/*$('#body-week >tr>td>').click(function() {
+    $test = $(this).text();
+   // $('#input').val($test);
+    alert($test)
+}
+);*/
+$("#body-week").on("click", "td", function() {
+   // alert($('span:first', this).text());
+    $.ajax({
+        url : url,
+        type : 'GET',
+        dataType : 'json',
+        data:{
+            action:'action',
+            jour:$('span:last', this).text(),
+            id_crenneaux:$('span:first', this).text()
+        },
+        success : function(resultat, statut){ // success est toujours en place, bien sûr !
+            console.log(resultat);
+        },
+
+        error : function(resultat, statut, erreur){
+
+        }
+
+    });
+});
+
 function addDays(date, amount) {
     var tzOff = date.getTimezoneOffset() * 60 * 1000,
         t = date.getTime(),

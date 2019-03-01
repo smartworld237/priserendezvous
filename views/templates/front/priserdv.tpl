@@ -39,7 +39,7 @@
             <table class="table table-bordered" id="week">
                 <thead id="week-change"  style="background-color: #0f6ab4;color: #0a0a0a"></thead>
                 <tbody id="body-week">
-
+                <tr id="body-tr"></tr>
                 </tbody>
 
             </table>
@@ -67,7 +67,7 @@
                 <th scope="col">Samedi</th>
                 <th scope="col">Dimanche</th>
             </tr>*}
-        <tr>
+   {*     <tr>
             <th>Sun</th>
             <th>Mon</th>
             <th>Tue</th>
@@ -75,7 +75,7 @@
             <th>Thu</th>
             <th>Fri</th>
             <th>Sat</th>
-        </tr>
+        </tr>*}
             </thead>
             <tbody id="calendar-body">
 
