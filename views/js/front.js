@@ -164,9 +164,9 @@ function init(day) {
                         type : 'GET',
                         dataType : 'json',
                         data:{
-                            action:'rendevs',
+                            rendevs:'rendevs',
                             jour:daz.toISOString(),
-                            id_crenneaux:value.id_priserendezvouscreneaux
+                            id_crenneau:value.id_priserendezvouscreneaux
                         },
                         success : function(result, statut){ // success est toujours en place, bien sûr !
                             console.log(result);
@@ -177,8 +177,14 @@ function init(day) {
                         }
 
                     });
-                    $('tr:last').append('<td class="disabled"><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning ">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
-                        '<span class="hidden">'+daz.toISOString()+'</span>');
+                    if ( (j % 2) == 0) {
+                        $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning disabled">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
+                            '</span><span class="hidden">'+daz.toISOString()+'</span>');
+                    } else {
+                        $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning"  id="testtd">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
+                            '</span><span class="hidden">'+daz.toISOString()+'</span>');
+                    }
+
                 }
                 }
             });
@@ -199,26 +205,36 @@ function init(day) {
     alert($test)
 }
 );*/
-$("#body-week").on("click", "td", function() {
-   // alert($('span:first', this).text());
-    $.ajax({
-        url : url,
-        type : 'GET',
-        dataType : 'json',
-        data:{
-            action:'action',
-            jour:$('span:last', this).text(),
-            id_crenneaux:$('span:first', this).text()
-        },
-        success : function(resultat, statut){ // success est toujours en place, bien sûr !
-            console.log(resultat);
-        },
+//$("#testtd").attr("disabled", "disabled");
+//$("tbody td").find("span:first").text();
 
-        error : function(resultat, statut, erreur){
+$("#body-week").on("click", "td", function(e) {
+    //e.preventDefault();
 
-        }
+   // $(this).find("#testtd").attr("disabled", "disabled");
+    $('#testtd', this).on("click",function () {
+      //  alert($("tbody td").find("span:first").text());
+        alert($(this).text());
+        $.ajax({
+            url : url,
+            type : 'GET',
+            dataType : 'json',
+            data:{
+                action:'action',
+                jour:$('span:last', this).text(),
+                id_crenneaux:$('span:first', this).text()
+            },
+            success : function(resultat, statut){ // success est toujours en place, bien sûr !
+                console.log(resultat);
+            },
 
+            error : function(resultat, statut, erreur){
+
+            }
+
+        });
     });
+
 });
 
 function addDays(date, amount) {

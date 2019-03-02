@@ -29,21 +29,23 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
         $json = Tools::jsonEncode($response);
          $this->ajaxDie($json);
 
-    }else if(Tools::getValue("action")){
+        }else if(Tools::getValue("action")){
             /*$customer = $this->context->customer;*/
             $rendezvs= new PriserendezvousModel();
             $rendezvs->id_client=Customer::customerIdExistsStatic(1);
            $rendezvs->jour=Tools::getValue("jour");
             //$rendezvs->jour=new Date();
             $rendezvs->id_priserendezvouscreneaux=Tools::getValue("id_crenneaux");
-            $rendezvs->save();
+            //$rendezvs->save();
             //$response=Priserendezvouscreneaux::getCrenneaux(1);
             $json = Tools::jsonEncode($rendezvs);
             $this->ajaxDie($json);
         }else if(Tools::getValue("rendevs")){
-           $rendezvs=$this->getRendezVs2(Tools::getValue("id_crenneaux"),Tools::getValue("jour"));
-            //$response=Priserendezvouscreneaux::getCrenneaux(1);
-            $json = Tools::jsonEncode($rendezvs);
+           //$rend=$this->getRendezVs2(Tools::getValue("id_crenneau"),Tools::getValue("jour"));
+            //$rend=PriserendezvousModel::getRendezVs(Tools::getValue("id_crenneau"),Tools::getValue("jour"));
+            $response=Customer::getCustomers();
+            //if ($rendezvs)
+            $json = Tools::jsonEncode($response);
             $this->ajaxDie($json);
         }
 

@@ -32,7 +32,7 @@
             <div class="col-md-3 pull-right form-inline">
 <input type="hidden" id="url" value="{$prise_controller_url}">
                 {*<button type="submit" name="action">test</button>*}
-                <button type="submit" class="btn btn-primary col-sm-6" name="action" id="previous" onclick="previousWeek()"><i class="fa fa-arrow-circle-left"></i> Previous</button>
+                <button type="submit" class="btn btn-primary col-sm-6 disabled" name="action" id="previous" onclick="previousWeek()"><i class="fa fa-arrow-circle-left"></i> Previous</button>
 
                 <button class="btn btn-primary col-sm-6" id="next" onclick="nextWeek()">Next <i class="fa fa-arrow-circle-right"></i></button>
             </div>
