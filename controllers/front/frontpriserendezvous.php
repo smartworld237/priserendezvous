@@ -18,6 +18,7 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
     //$this->ajax = true; // enable ajax
         $tres="merci";
         $parameters = array();
+        $tres.=PriserendezvousModel::getRendezVs(Tools::getValue(2),Tools::getValue("2019-03-01"));
         $this->context->smarty->assign(array(
             //'orders' => $this->getProducts(),
             'test' => $tres,
@@ -25,7 +26,7 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
         ));
 
         if(Tools::getValue("action_reponse")){
-        $response=Priserendezvouscreneaux::getCrenneaux(1);
+        $response=Priserendezvouscreneaux::getCrenneaux(7);
         $json = Tools::jsonEncode($response);
          $this->ajaxDie($json);
 
@@ -36,16 +37,25 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
            $rendezvs->jour=Tools::getValue("jour");
             //$rendezvs->jour=new Date();
             $rendezvs->id_priserendezvouscreneaux=Tools::getValue("id_crenneaux");
-            //$rendezvs->save();
+            $rendezvs->save();
             //$response=Priserendezvouscreneaux::getCrenneaux(1);
             $json = Tools::jsonEncode($rendezvs);
             $this->ajaxDie($json);
         }else if(Tools::getValue("rendevs")){
            //$rend=$this->getRendezVs2(Tools::getValue("id_crenneau"),Tools::getValue("jour"));
-            //$rend=PriserendezvousModel::getRendezVs(Tools::getValue("id_crenneau"),Tools::getValue("jour"));
-            $response=Customer::getCustomers();
-            //if ($rendezvs)
-            $json = Tools::jsonEncode($response);
+            $rend=PriserendezvousModel::getRendezVs(Tools::getValue("id_crenneau"),Tools::getValue("jour"));
+            //$response=Customer::getCustomers();
+
+            if ($rend==0){
+                $response=[
+                    'resp'=>false,
+                ];
+            }else if($rend==1){
+                $response=[
+                    'resp'=>true,
+                ];
+            }
+            $json = Tools::jsonEncode($rend);
             $this->ajaxDie($json);
         }
 
@@ -53,9 +63,9 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
 }
     public function getRendezVs2($id_crenneaux,$jours){
 
-        $sql = 'SELECT EXISTS(SELECT  d.`id_priserendezvous`
+        $sql = 'SELECT COUNT (d.`id_priserendezvous`)
             FROM `' . _DB_PREFIX_ . 'priserendezvous`d
-            where  d.id_priserendezvouscreneaux ='.$id_crenneaux.' and d.jour='.$jours.') as result';
+            where  d.id_priserendezvouscreneaux ='.$id_crenneaux.' and d.jour='.$jours;
 
         $content = Db::getInstance()->executeS($sql);
 

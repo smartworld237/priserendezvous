@@ -26,17 +26,16 @@ class PriserendezvousModel extends ObjectModel
 
     );
 public function getRendezVs($id_crenneaux,$jours){
-    $result=false;
-    $sql = 'SELECT EXISTS(SELECT  d.`*`
+    /*$sql = 'SELECT EXISTS(SELECT  d.`*`
             FROM `' . _DB_PREFIX_ . 'priserendezvous`d
-            where  d.id_priserendezvouscreneaux ='.$id_crenneaux.' and d.jour='.$jours.')';
+            where  d.id_priserendezvouscreneaux ='.$id_crenneaux.' and d.jour='.$jours.')';*/
+    $gr='2019-03-02';
+    $sql = 'SELECT d.`id_priserendezvous`
+            FROM `' . _DB_PREFIX_ . 'priserendezvous`d
+            where  d.id_priserendezvouscreneaux =2 and d.jour='.$gr ;
 
     $content = Db::getInstance()->executeS($sql);
-if($content=== null){
-    $result=false;
-}else{
-    $result=true;
-}
+
     return $content;
 }
 }

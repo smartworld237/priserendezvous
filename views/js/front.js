@@ -129,6 +129,7 @@ function previousWeek() {
     today.setDate(today.getDate()-7);
     init(today);
 }
+var reponse=false;
 function init(day) {
     let toDay = day.getDay();
     thead=document.getElementById("week-change");
@@ -157,7 +158,7 @@ function init(day) {
                 for (let i = 1; i < 2; i++) {
                     $('#body-week').append('<tr>');
                 for (let j=0;j<7;j++) {
-                    //console.log(j + "-" + key);
+                    console.log(j + "-" + key);
                     var daz = addDays(day, j);
                     $.ajax({
                         url : url,
@@ -170,6 +171,14 @@ function init(day) {
                         },
                         success : function(result, statut){ // success est toujours en place, bien sûr !
                             console.log(result);
+                             reponse = result.resp;
+                            /*if (result.resp===false) {
+                                $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning"  id="testtd">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
+                                    '</span><span class="hidden">'+daz.toISOString()+'</span>');
+                            }else {
+                                $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning" disabled>' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
+                                    '</span><span class="hidden">'+daz.toISOString()+'</span>');
+                            }*/
                         },
 
                         error : function(result, statut, erreur){
@@ -177,13 +186,21 @@ function init(day) {
                         }
 
                     });
-                    if ( (j % 2) == 0) {
+                    //alert(reponse);
+                    if (!reponse) {
+                        $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning"  id="testtd">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
+                            '</span><span class="hidden">'+daz.toISOString()+'</span>');
+                    }else {
+                        $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-danger" disabled>' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
+                            '</span><span class="hidden">'+daz.toISOString()+'</span>');
+                    }
+                /*    if ( (j % 2) == 0) {
                         $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning disabled">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
                             '</span><span class="hidden">'+daz.toISOString()+'</span>');
                     } else {
                         $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning"  id="testtd">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
                             '</span><span class="hidden">'+daz.toISOString()+'</span>');
-                    }
+                    }*/
 
                 }
                 }
@@ -210,7 +227,8 @@ function init(day) {
 
 $("#body-week").on("click", "td", function(e) {
     //e.preventDefault();
-
+let cr=$('span:first', this).text();
+let j=$('span:last', this).text();
    // $(this).find("#testtd").attr("disabled", "disabled");
     $('#testtd', this).on("click",function () {
       //  alert($("tbody td").find("span:first").text());
@@ -221,8 +239,8 @@ $("#body-week").on("click", "td", function(e) {
             dataType : 'json',
             data:{
                 action:'action',
-                jour:$('span:last', this).text(),
-                id_crenneaux:$('span:first', this).text()
+                jour:j,
+                id_crenneaux:cr
             },
             success : function(resultat, statut){ // success est toujours en place, bien sûr !
                 console.log(resultat);
