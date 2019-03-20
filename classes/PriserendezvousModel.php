@@ -13,7 +13,7 @@ class PriserendezvousModel extends ObjectModel
     public $id_priserendezvouscreneaux;
     public $jour;
     public static $definition = array(
-        'table' => 'Priserendezvous',
+        'table' => 'priserendezvous',
         'primary' => 'id_priserendezvous',
         // 'multilang' => true,
         'fields' => array(
@@ -29,13 +29,14 @@ public function getRendezVs($id_crenneaux,$jours){
     /*$sql = 'SELECT EXISTS(SELECT  d.`*`
             FROM `' . _DB_PREFIX_ . 'priserendezvous`d
             where  d.id_priserendezvouscreneaux ='.$id_crenneaux.' and d.jour='.$jours.')';*/
-    $gr='2019-03-02';
+    $gr='2019-03-20';
+    $jg='"'.$jours.'"';
     $sql = 'SELECT d.`id_priserendezvous`
             FROM `' . _DB_PREFIX_ . 'priserendezvous`d
-            where  d.id_priserendezvouscreneaux =2 and d.jour='.$gr ;
+            where  d.id_priserendezvouscreneaux ='.$id_crenneaux.' and d.jour='.$jg;
 
     $content = Db::getInstance()->executeS($sql);
-
+//if ($content)
     return $content;
 }
 }

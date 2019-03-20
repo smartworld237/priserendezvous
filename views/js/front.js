@@ -29,22 +29,8 @@ $(document).ready(function () {
     var $searchWidget = $('#url');
     //var $searchBox    = $("select[class=dd_select]", $element).val()
     var searchURL     = $searchWidget.attr('data-search-controller-url');
-    /*$.ajax({
-        url : $('').val(),
-        type : 'GET',
-        dataType : 'json',
-        data:'action_name',
-        success : function(resultat, statut){ // success est toujours en place, bien sûr !
-            console.log(resultat);
-            // swal(nameProduct, "is added to cart !", "success");
-        },
-
-        error : function(resultat, statut, erreur){
-
-        }
-
-    });*/
     var day=new Date();
+    //alert(formatDate(day));
    // init2(day);
     var jours2=["Monday","Tuesday","Wednesday","Jeudi","vendredi","samedi","Dimanche"];
     function init2(day) {
@@ -129,9 +115,10 @@ function previousWeek() {
     today.setDate(today.getDate()-7);
     init(today);
 }
-var reponse=false;
+
 function init(day) {
     let toDay = day.getDay();
+    let reponse=[];
     thead=document.getElementById("week-change");
     thead.innerHTML="";
     let row = document.createElement("tr");
@@ -160,18 +147,21 @@ function init(day) {
                 for (let j=0;j<7;j++) {
                     console.log(j + "-" + key);
                     var daz = addDays(day, j);
+                   // let reponse=[];
                     $.ajax({
                         url : url,
                         type : 'GET',
                         dataType : 'json',
                         data:{
                             rendevs:'rendevs',
-                            jour:daz.toISOString(),
+                            jour:formatDate(daz),
                             id_crenneau:value.id_priserendezvouscreneaux
                         },
                         success : function(result, statut){ // success est toujours en place, bien sûr !
                             console.log(result);
-                             reponse = result.resp;
+                           //reponse = result;
+                            $('#rep').text(result.length);
+                            //alert($('#rep').val());
                             /*if (result.resp===false) {
                                 $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning"  id="testtd">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
                                     '</span><span class="hidden">'+daz.toISOString()+'</span>');
@@ -181,13 +171,13 @@ function init(day) {
                             }*/
                         },
 
-                        error : function(result, statut, erreur){
+                        error : function(re, statut, erreur){
 
                         }
 
                     });
-                    //alert(reponse);
-                    if (!reponse) {
+                    alert($('#rep').text());
+                    if ( 1) {
                         $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning"  id="testtd">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
                             '</span><span class="hidden">'+daz.toISOString()+'</span>');
                     }else {
@@ -224,7 +214,17 @@ function init(day) {
 );*/
 //$("#testtd").attr("disabled", "disabled");
 //$("tbody td").find("span:first").text();
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
 $("#body-week").on("click", "td", function(e) {
     //e.preventDefault();
 let cr=$('span:first', this).text();

@@ -261,7 +261,7 @@ class Priserendezvous extends Module
         if (is_null($id_lang))
             $id_lang = (int) Configuration::get('PS_LANG_DEFAULT');
 
-        $sql = 'SELECT dl.`*`, cr.`*`
+        $sql = 'SELECT dl.*, cr.*
             FROM `' . _DB_PREFIX_ . 'priserendezvouscreneaux`cr 
             LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvousdepartement` d ON (d.`id_priserendezvousdepartement` = cr.`id_priserendezvousdepartement`) 
         
@@ -279,7 +279,7 @@ class Priserendezvous extends Module
         if (is_null($id_lang))
             $id_lang = (int) Configuration::get('PS_LANG_DEFAULT');
 
-        $sql = 'SELECT dl.`*`, d.`*`
+        $sql = 'SELECT dl.*, d.*
             FROM `' . _DB_PREFIX_ . 'priserendezvousdepartement`d 
            LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvousdepartement_lang` dl ON (dl.`id_priserendezvousdepartement` = d.`id_priserendezvousdepartement`)
            where dl.id_lang='.$id_lang;

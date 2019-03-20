@@ -30,7 +30,7 @@ class Priserendezvouscreneaux extends ObjectModel
 
     );
     public function getCrenneaux($iddepartement){
-        $sql = 'SELECT  d.`*`
+        $sql = 'SELECT  d.*
             FROM `' . _DB_PREFIX_ . 'priserendezvouscreneaux`d
             where  d.id_priserendezvousdepartement ='.$iddepartement;
 

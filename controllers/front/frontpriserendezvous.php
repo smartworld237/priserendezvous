@@ -18,7 +18,7 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
     //$this->ajax = true; // enable ajax
         $tres="merci";
         $parameters = array();
-        $tres.=PriserendezvousModel::getRendezVs(Tools::getValue(2),Tools::getValue("2019-03-01"));
+       // $tres.=PriserendezvousModel::getRendezVs(Tools::getValue(2),Tools::getValue("2019-03-01"));
         $this->context->smarty->assign(array(
             //'orders' => $this->getProducts(),
             'test' => $tres,
@@ -26,7 +26,7 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
         ));
 
         if(Tools::getValue("action_reponse")){
-        $response=Priserendezvouscreneaux::getCrenneaux(7);
+        $response=Priserendezvouscreneaux::getCrenneaux(1);
         $json = Tools::jsonEncode($response);
          $this->ajaxDie($json);
 
@@ -37,8 +37,7 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
            $rendezvs->jour=Tools::getValue("jour");
             //$rendezvs->jour=new Date();
             $rendezvs->id_priserendezvouscreneaux=Tools::getValue("id_crenneaux");
-            $rendezvs->save();
-            //$response=Priserendezvouscreneaux::getCrenneaux(1);
+            //$rendezvs->save();
             $json = Tools::jsonEncode($rendezvs);
             $this->ajaxDie($json);
         }else if(Tools::getValue("rendevs")){
