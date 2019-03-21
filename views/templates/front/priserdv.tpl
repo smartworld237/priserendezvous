@@ -30,23 +30,27 @@
         <h1>{l s='Prendre un rendez-vous' d='Modules.demandedevis'}</h1>
         <div class="row">
             <div class="col-md-3 pull-right form-inline">
-                <input type="text" id="rep">
-<input type="hidden" id="url" value="{$prise_controller_url}">
+                <input type="hidden" id="rep">
+            <input type="hidden" id="url" value="{$prise_controller_url}">
                 {*<button type="submit" name="action">test</button>*}
-                <button type="submit" class="btn btn-primary col-sm-6 disabled" name="action" id="previous" onclick="previousWeek()"><i class="fa fa-arrow-circle-left"></i> Previous</button>
+                <button type="submit" class="btn btn-primary col-sm-6" name="action" id="previous" onclick="previousWeek()"><i class="fa fa-arrow-circle-left"></i> Previous</button>
 
                 <button class="btn btn-primary col-sm-6" id="next" onclick="nextWeek()">Next <i class="fa fa-arrow-circle-right"></i></button>
             </div>
+
             <table class="table table-bordered" id="week">
                 <thead id="week-change"  style="background-color: #0f6ab4;color: #0a0a0a"></thead>
                 <tbody id="body-week">
                 <tr id="body-tr"></tr>
+
                 </tbody>
 
             </table>
-
+            <div class="loader center-block hidden"></div>
         </div>
-        <div class="row">
+        <br>
+        <br>
+        {*<div class="row">
             <h3 class="card-header col-md-3" id="monthAndYear"></h3>
             <div class="col-md-3 pull-right form-inline">
 
@@ -65,5 +69,5 @@
 
         </table>
 
-    </div>
+    </div>*}
 {/block}

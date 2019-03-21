@@ -133,6 +133,8 @@ function init(day) {
         row.appendChild(cell);*/
 
     }
+    $('#body-week > tr').remove();
+    $('.loader').removeClass('hidden');
     $.ajax({
         url : url,
         type : 'GET',
@@ -143,6 +145,7 @@ function init(day) {
         success : function(resultat, statut){ // success est toujours en place, bien sûr !
             $.each( resultat, function( key, value ) {
                 for (let i = 1; i < 2; i++) {
+
                     $('#body-week').append('<tr>');
                 for (let j=0;j<7;j++) {
                     console.log(j + "-" + key);
@@ -151,6 +154,7 @@ function init(day) {
                     $.ajax({
                         url : url,
                         type : 'GET',
+                        async: false,
                         dataType : 'json',
                         data:{
                             rendevs:'rendevs',
@@ -176,14 +180,15 @@ function init(day) {
                         }
 
                     });
-                    alert($('#rep').text());
-                    if ( 1) {
+                    //alert($('#rep').text());
+                    if ($('#rep').text() < 1) {
                         $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning"  id="testtd">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
                             '</span><span class="hidden">'+daz.toISOString()+'</span>');
                     }else {
-                        $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-danger" disabled>' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
+                        $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-danger disabled">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
                             '</span><span class="hidden">'+daz.toISOString()+'</span>');
                     }
+                    $('.loader').addClass('hidden');
                 /*    if ( (j % 2) == 0) {
                         $('tr:last').append('<td><span class="hidden">'+value.id_priserendezvouscreneaux+'</span><span class="btn btn-warning disabled">' + value.hdebut + ':' + value.mdebut + '-' + value.hfin + ':' + value.mfin+'' +
                             '</span><span class="hidden">'+daz.toISOString()+'</span>');
