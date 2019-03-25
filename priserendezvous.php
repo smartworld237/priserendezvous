@@ -158,23 +158,13 @@ class Priserendezvous extends Module
             'search' => true,
             'orderby' => true
         );
-        $this->fields_list['hdebut'] = array(
+        $this->fields_list['debut'] = array(
             'title' => $this->l('Heure de debut'),
             'type' => 'text',
             'search' => false,
             'orderby' => false
-        );  $this->fields_list['mdebut'] = array(
-            'title' => $this->l('Minuite de debut'),
-            'type' => 'text',
-            'search' => false,
-            'orderby' => false
-        );  $this->fields_list['hfin'] = array(
-            'title' => $this->l('Heure de debut'),
-            'type' => 'text',
-            'search' => false,
-            'orderby' => false
-        );  $this->fields_list['mfin'] = array(
-            'title' => $this->l('Heure de debut'),
+        );  $this->fields_list['fin'] = array(
+            'title' => $this->l('Heure de fin'),
             'type' => 'text',
             'search' => false,
             'orderby' => false
@@ -189,7 +179,7 @@ class Priserendezvous extends Module
         );
         $helper->show_toolbar       = true;
         $helper->imageType          = 'jpg';
-       $helper->toolbar_btn['new'] = array(
+        $helper->toolbar_btn['new'] = array(
             'href' => AdminController::$currentIndex . '&configure=' . $this->name . '&addcrenneaux'. '&token='
                 . Tools::getAdminTokenLite('AdminModules'),
             'desc' => $this->l('Add new')
@@ -201,6 +191,62 @@ class Priserendezvous extends Module
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
 
         $content = $this->getListContent($this->context->language->id);
+
+        return $helper->generateList($content, $this->fields_list);
+    }
+    protected function renderListRendezVous(){
+        $this->fields_list          = array();
+        $this->fields_list['id_priserendezvous'] = array(
+            'title' => $this->l('id'),
+            'type' => 'text',
+            'search' => false,
+            'orderby' => false
+        );
+        $this->fields_list['first_name'] = array(
+            'title' => $this->l('Nom du Client'),
+            'type' => 'text',
+            'search' => false,
+            'orderby' => true
+        );
+        $this->fields_list['jour'] = array(
+            'title' => $this->l('Jour'),
+            'type' => 'text',
+            'search' => true,
+            'orderby' => true
+        );
+        $this->fields_list['debut'] = array(
+            'title' => $this->l('Heure de debut'),
+            'type' => 'text',
+            'search' => false,
+            'orderby' => false
+        );  $this->fields_list['fin'] = array(
+            'title' => $this->l('Heure de fin'),
+            'type' => 'text',
+            'search' => false,
+            'orderby' => false
+        );
+        $helper = new HelperList();
+        $helper->shopLinkType   = '';
+        $helper->simple_header      = false;
+        $helper->identifier         = 'priserendezvous';
+        $helper->actions            = array(
+            'view',
+            'delete'
+        );
+        $helper->show_toolbar       = true;
+        $helper->imageType          = 'jpg';
+       $helper->toolbar_btn['new'] = array(
+            'href' => AdminController::$currentIndex . '&configure=' . $this->name . '&addcrenneaux'. '&token='
+                . Tools::getAdminTokenLite('AdminModules'),
+            'desc' => $this->l('Add new')
+        );
+
+        $helper->title        = 'Liste des Rendez Vous';
+        $helper->table        = $this->name;
+        $helper->token        = Tools::getAdminTokenLite('AdminModules');
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+
+        $content = $this->getListContentRdv($this->context->language->id);
 
         return $helper->generateList($content, $this->fields_list);
     }
@@ -261,12 +307,31 @@ class Priserendezvous extends Module
         if (is_null($id_lang))
             $id_lang = (int) Configuration::get('PS_LANG_DEFAULT');
 
-        $sql = 'SELECT dl.*, cr.*
+        $sql = 'SELECT dl.*, cr.*,CONCAT(cr.hdebut, ":",cr.mdebut) as debut,
+CONCAT(cr.hfin, ":",cr.mfin) as fin
             FROM `' . _DB_PREFIX_ . 'priserendezvouscreneaux`cr 
             LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvousdepartement` d ON (d.`id_priserendezvousdepartement` = cr.`id_priserendezvousdepartement`) 
         
            LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvousdepartement_lang` dl ON (dl.`id_priserendezvousdepartement` = d.`id_priserendezvousdepartement`)
            where dl.id_lang='.$id_lang;
+
+
+
+        $content = Db::getInstance()->executeS($sql);
+
+        return $content;
+    }
+    protected function getListContentRdv($id_lang = null)
+    {
+        if (is_null($id_lang))
+            $id_lang = (int) Configuration::get('PS_LANG_DEFAULT');
+
+        $sql = 'SELECT cr.*,r.*,CONCAT(cr.hdebut, ":",cr.mdebut) as debut,
+CONCAT(cr.hfin, ":",cr.mfin) as fin
+            FROM `' . _DB_PREFIX_ . 'priserendezvous`r 
+             LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvouscreneaux` cr 
+             ON (cr.`id_priserendezvouscreneaux` = r.`id_priserendezvous`) '
+      ;
 
 
 

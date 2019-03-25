@@ -30,19 +30,20 @@ class AdminPriserendezvousController extends ModuleAdminController
             'jour' => array('title' => "Jour", 'align' =>
                 'center', 'width' => 25),
 
-            'hdebut' => array('title' => "Heure debut", 'align' =>
+            'debut' => array('title' => "Heure debut", 'align' =>
                 'center', 'width' => 15),
 
-            'mdebut' => array('title' => "Minuite Fin", 'align' =>
+            /*'mdebut' => array('title' => "Minuite Fin", 'align' =>
+                'center', 'width' => 15),*/
+
+            'fin' => array('title' => "Heure Fin", 'align' =>
                 'center', 'width' => 15),
 
-            'hfin' => array('title' => "Heure Fin", 'align' =>
-                'center', 'width' => 15),
-
-            'mfin' => array('title' => "Minuite Fin", 'align' =>
-                'center', 'width' => 15),
+        /*    'mfin' => array('title' => "Minuite Fin", 'align' =>
+                'center', 'width' => 15),*/
         );
-        $this->_select = ' a.*, cr.*,dl.*, c.`firstname` as client';
+        $this->_select = ' a.*, cr.*,dl.*, c.`firstname` as client,CONCAT(cr.hdebut, ":",cr.mdebut) as debut,
+CONCAT(cr.hfin, ":",cr.mfin) as fin';
         $this->_join='LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON (a.`id_client` = c.`id_customer`) 
          LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvouscreneaux` cr ON (a.`id_priserendezvouscreneaux` = cr.`id_priserendezvouscreneaux`)
            LEFT JOIN `' . _DB_PREFIX_ . 'priserendezvousdepartement` d ON (cr.`id_priserendezvousdepartement` = d.`id_priserendezvousdepartement`)

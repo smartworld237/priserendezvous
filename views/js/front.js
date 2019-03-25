@@ -119,8 +119,6 @@ function previousWeek() {
 function init(day) {
     let toDay = day.getDay();
     let reponse=[];
-    thead=document.getElementById("week-change");
-    thead.innerHTML="";
     let row = document.createElement("tr");
     for (let i=0;i<7;i++){
         var d2 = addDays(day, i);
@@ -147,7 +145,7 @@ function init(day) {
                 for (let i = 1; i < 2; i++) {
 
                     $('#body-week').append('<tr>');
-                for (let j=0;j<7;j++) {
+                for (let j=0;j<6;j++) {
                     console.log(j + "-" + key);
                     var daz = addDays(day, j);
                    // let reponse=[];
@@ -237,7 +235,7 @@ let j=$('span:last', this).text();
    // $(this).find("#testtd").attr("disabled", "disabled");
     $('#testtd', this).on("click",function () {
       //  alert($("tbody td").find("span:first").text());
-        alert($(this).text());
+
         $.ajax({
             url : url,
             type : 'GET',
@@ -248,6 +246,8 @@ let j=$('span:last', this).text();
                 id_crenneaux:cr
             },
             success : function(resultat, statut){ // success est toujours en place, bien sûr !
+                alert('Merci votre rendez-vous a ete enregistre');
+                init(today);
                 console.log(resultat);
             },
 

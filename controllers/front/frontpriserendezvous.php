@@ -33,13 +33,34 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
         }else if(Tools::getValue("action")){
             /*$customer = $this->context->customer;*/
             $rendezvs= new PriserendezvousModel();
-            $rendezvs->id_client=Customer::customerIdExistsStatic(1);
-           $rendezvs->jour=Tools::getValue("jour");
+            $rendezvs->id_client=$this->context->customer->id;
+            $rendezvs->jour=Tools::getValue("jour");
             //$rendezvs->jour=new Date();
             $rendezvs->id_priserendezvouscreneaux=Tools::getValue("id_crenneaux");
-            //$rendezvs->save();
+            Mail::Send((int)(Configuration::get('PS_LANG_DEFAULT')), // defaut language id
+                'contact',
+                'Sujet du mail', array('{email}' => 'rodriguembah13@gmail.com', // sender email address
+                    '{customer_firstname}' => $this->context->customer->firstname,
+                    '{customer_lastname}' => $this->context->customer->lastname,
+                    '{company}' =>$this->context->customer->company), 'rodriguembah13@gmail.com',
+                'Service administratif', 'giecameroon');
+            $rendezvs->save();
             $json = Tools::jsonEncode($rendezvs);
             $this->ajaxDie($json);
+
+            /* Mail::Send(
+                 (int)(Configuration::get('PS_LANG_DEFAULT')), // defaut language id
+                 'contact', // email template file to be use
+                 ' Module Installation', // email subject
+                 array(
+                     '{email}' => Configuration::get('PS_SHOP_EMAIL'), // sender email address
+                     '{message}' => 'Hello world' // email content
+                 ),
+                 Configuration::get('PS_SHOP_EMAIL'), // receiver email address
+                 $this->context->customer->firstname, //receiver name
+                 'rodriguembah13@gmail.com', //from email address
+                 'giecameroon' //from name
+             );*/
         }else if(Tools::getValue("rendevs")){
            //$rend=$this->getRendezVs2(Tools::getValue("id_crenneau"),Tools::getValue("jour"));
             $rend=PriserendezvousModel::getRendezVs(Tools::getValue("id_crenneau"),Tools::getValue("jour"));
@@ -56,9 +77,19 @@ class priserendezvousfrontpriserendezvousModuleFrontController extends ModuleFro
             }
             $json = Tools::jsonEncode($rend);
             $this->ajaxDie($json);
+        }else if (Tools::getValue("registredname")){
+          //  $this->setTemplate('module:priserendezvous/views/templates/front/priserdv.tpl');
+        }
+        if ($this->context->customer->isLogged()) {
+
+            //echo $this->context->customer->id;
+            $this->setTemplate('module:priserendezvous/views/templates/front/priserdv.tpl');
+        }else{
+            Tools::redirect('index.php?controller=authentication?back=my-account');
+           // $this->setTemplate('module:priserendezvous/views/templates/front/priserdvinit.tpl');
         }
 
-        $this->setTemplate('module:priserendezvous/views/templates/front/priserdv.tpl');
+
 }
     public function getRendezVs2($id_crenneaux,$jours){
 
